@@ -8,7 +8,7 @@ let mongoStore = require('connect-mongo');
 
 
 
-let connectDB = require('./config/db')
+let connectDB = require('./config/db');
 
 let app = express();
 let port = process.env.PORT || 5000;
@@ -30,12 +30,12 @@ app.use(session({
   //cookie: { maxAge: new Date ( Date.now() + (3600000) ) } 
 }));
 
-app.use(express.static('public'))
+app.use(express.static('public'));
 
 //Template Engine
 app.use(expressLayout);
-app.set('layout', './layouts/main')
-app.set('view engine', 'ejs')
+app.set('layout', './layouts/main');
+app.set('view engine', 'ejs');
 
 app.use('/', require('./routes/main'));
 app.use('/', require('./routes/admin'));
@@ -43,4 +43,4 @@ app.use('/', require('./routes/admin'));
 //listening to this port 127.0.0.1:5000 like this.
 app.listen(port, () => {
   console.log(`App is listening on port ${port}`);
-})
+});
