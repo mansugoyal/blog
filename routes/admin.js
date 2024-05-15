@@ -113,13 +113,11 @@ router.get('/create-post', authMiddleware, async (req, res) => {
             title: "Create Post",
             description: "Simple Blog created with NodeJs, Express & MongoDb."
         }
-
         res.render('admin/create-post', {
             locals,
             layout: adminLayout,
             token: req.cookies.token
         });
-
     } catch (error) {
         console.log(error);
     }
@@ -141,6 +139,46 @@ router.post('/create-post', authMiddleware, async (req, res) => {
     }
 });
 
+/**
+ * Get /
+ * Admin edit get layout
+*/
+
+router.get('/edit-page/:id', authMiddleware, async (req, res) => {
+    try {
+        let locals = {
+            title: "Edit Post",
+            description: "Simple Blog created with NodeJs, Express & MongoDb."
+        }
+        let data = await post.findById(req.params.id);
+        res.render('admin/edit-post', {
+            locals,
+            layout: adminLayout,
+            token: req.cookies.token,
+            data
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+
+/**
+ * Post /
+ * Admin update edit post
+*/
+
+router.put('/edit-post/:id', authMiddleware, async (req, res) => {
+    try {
+        let { title, body } = req.body;
+        await post.findByIdAndUpdate(req.params.id, { title, body });
+        res.redirect('/dashboard');
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+
 
 /**
  * Delete /
@@ -155,22 +193,6 @@ router.delete('/delete-post/:id', authMiddleware, async (req, res) => {
         console.log(error);
     }
 });
-
-
-// router.post('/admin', async (req, res) => {
-//     try {
-//         const { username, password } = req.body;
-//         if (req.body.username === "admin" && req.body.password === "password") {
-//             res.send("You are logged in.");
-//         } else {
-//             res.send("Wrong username or password")
-//         }
-//         res.render('admin/index', { layout: adminLayout });
-//     } catch (error) {
-//         console.log(error);
-//     }
-// });
-
 
 
 /**
