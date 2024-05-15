@@ -9,6 +9,26 @@ let adminLayout = '../views/layouts/admin';
 const jwtSecret = process.env.JWT_SECRET;
 
 
+
+/**
+ *  CHECK LOGIN
+*/
+
+let authMiddleware = (req, res, next)=>{
+    let token = req.cookies.token;
+    if(!token){
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    try{
+        let decoded = jwt.verify(token, jwtSecret);
+        req.userId = decoded.userId;
+        next();
+    }catch(error){
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+}
+
 /**
  * GET /
  * ADMIN - LOGIN
@@ -47,8 +67,8 @@ router.post('/admin', async (req, res) => {
             res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        const token = jwt.sign({ userId: user._id }, jwtSecret);
-        res.cookie('token', token, { httpOnly: true });
+        let token = jwt.sign({ userId: user._id }, jwtSecret);
+        res.cookie("token", token, { httpOnly: true });
         res.redirect('/dashboard');
         
     } catch (error) {
@@ -60,12 +80,21 @@ router.post('/admin', async (req, res) => {
 
 /**
  * POST /
- * ADMIN - DASHBOARD
+ * ADMIN DASHBOARD
 */
 
-router.get('/dashboard', async (req, res) => {
+router.get('/dashboard', authMiddleware, async (req, res) => {
     try {
-        res.render('admin/dashboard');
+        let locals = {
+            title: "Admin Dashboard",
+            description: "Simple Blog created with NodeJs, Express & MongoDb."
+        }
+
+        let data = await post.find();
+        res.render('admin/dashboard',{
+            locals,
+            data
+        });
     } catch (error) {
         console.log(error);
     }
@@ -90,7 +119,7 @@ router.get('/dashboard', async (req, res) => {
 
 /**
  * POST /
- * ADMIN - REGISTER
+ * ADMIN REGISTER
 */
 
 router.post('/register', async (req, res) => {
