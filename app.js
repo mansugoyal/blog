@@ -5,6 +5,7 @@ let expressLayout = require('express-ejs-layouts');
 let cookieParser = require('cookie-parser');
 let session = require('express-session');
 let mongoStore = require('connect-mongo');
+let methodOverride = require('method-override');
 
 
 
@@ -19,6 +20,7 @@ connectDB();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(cookieParser());
+app.use(methodOverride('_method'));
 
 app.use(session({
   secret: 'keyboard cat',

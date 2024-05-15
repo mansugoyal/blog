@@ -5,6 +5,7 @@ let User = require('../models/user');
 let bcrypt = require('bcrypt');
 let jwt = require('jsonwebtoken');
 
+
 let adminLayout = '../views/layouts/admin';
 const jwtSecret = process.env.JWT_SECRET;
 
@@ -31,7 +32,7 @@ let authMiddleware = (req, res, next) => {
 
 /**
  * GET /
- * ADMIN - LOGIN
+ * Admin - LOGIN
 */
 
 router.get('/admin', async (req, res) => {
@@ -50,7 +51,7 @@ router.get('/admin', async (req, res) => {
 
 /**
  * POST /
- * ADMIN - CHECK LOGIN
+ * Admin - CHECK LOGIN
 */
 
 router.post('/admin', async (req, res) => {
@@ -80,7 +81,7 @@ router.post('/admin', async (req, res) => {
 
 /**
  * POST /
- * ADMIN DASHBOARD
+ * Admin DASHBOARD
 */
 
 router.get('/dashboard', authMiddleware, async (req, res) => {
@@ -103,7 +104,7 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
 
 /**
  * GET /
- * ADMIN Create New Post
+ * Admin Create New Post
 */
 
 router.get('/create-post', authMiddleware, async (req, res) => {
@@ -126,7 +127,7 @@ router.get('/create-post', authMiddleware, async (req, res) => {
 
 /**
  * POST /
- * ADMIN Create New Post
+ * Admin Create New Post
 */
 
 router.post('/create-post', authMiddleware, async (req, res) => {
@@ -134,6 +135,21 @@ router.post('/create-post', authMiddleware, async (req, res) => {
         let { title, body } = req.body;
         let postCreated = await post.create({title, body});
         res.status(201).json({ message: 'Post Created', postCreated });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+
+/**
+ * DELETE /
+ * Admin Delete Post
+*/
+// Use method-override middleware
+router.delete('/delete-post/:id', authMiddleware, async (req, res) => {
+    try {
+        await post.deleteOne({_id: req.params.id});
+        res.redirect('/dashboard');
     } catch (error) {
         console.log(error);
     }
@@ -158,7 +174,7 @@ router.post('/create-post', authMiddleware, async (req, res) => {
 
 /**
  * POST /
- * ADMIN REGISTER
+ * Admin REGISTER
 */
 
 router.post('/register', async (req, res) => {
@@ -184,6 +200,20 @@ router.post('/register', async (req, res) => {
 });
 
 
+/**
+ * GET /
+ * Admin Logout
+*/
+
+router.get('/logout', async (req, res) => {
+    try {
+        res.clearCookie('token');
+  //res.json({ message: 'Logout successful.'});
+  res.redirect('/');
+    } catch (error) {
+        console.log(error);
+    }
+});
 
 
 
