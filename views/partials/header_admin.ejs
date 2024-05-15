@@ -20,9 +20,10 @@
     </nav>
 
     <div class="header__button">
-        <a href="/logout">
-            Logout
-        </a>
+        <% if (token) { %>
+            <a href="/logout">
+                Logout
+            </a>
+        <% } %>
     </div>
-
 </header>

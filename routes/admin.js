@@ -32,7 +32,7 @@ let authMiddleware = (req, res, next) => {
 
 /**
  * GET /
- * Admin - LOGIN
+ * Admin Login Page
 */
 
 router.get('/admin', async (req, res) => {
@@ -41,8 +41,7 @@ router.get('/admin', async (req, res) => {
             title: "Admin",
             description: "Simple Blog created with NodeJs, Express & MongoDb."
         }
-        // const data = await Post.find();
-        res.render('admin/index', { locals, layout: adminLayout });
+        res.render('admin/index', { locals, layout: adminLayout, token: req.cookies.token });
     } catch (error) {
         console.log("admin page error----" + error);
     }
@@ -95,7 +94,8 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
         res.render('admin/dashboard', {
             locals,
             data,
-            layout: adminLayout
+            layout: adminLayout,
+            token: req.cookies.token
         });
     } catch (error) {
         console.log("dashboard error-----" + error);
@@ -116,7 +116,8 @@ router.get('/create-post', authMiddleware, async (req, res) => {
 
         res.render('admin/create-post', {
             locals,
-            layout: adminLayout
+            layout: adminLayout,
+            token: req.cookies.token
         });
 
     } catch (error) {
@@ -133,7 +134,7 @@ router.get('/create-post', authMiddleware, async (req, res) => {
 router.post('/create-post', authMiddleware, async (req, res) => {
     try {
         let { title, body } = req.body;
-        let postCreated = await post.create({title, body});
+        let postCreated = await post.create({ title, body });
         res.status(201).json({ message: 'Post Created', postCreated });
     } catch (error) {
         console.log(error);
@@ -148,7 +149,7 @@ router.post('/create-post', authMiddleware, async (req, res) => {
 // Use method-override middleware
 router.delete('/delete-post/:id', authMiddleware, async (req, res) => {
     try {
-        await post.deleteOne({_id: req.params.id});
+        await post.deleteOne({ _id: req.params.id });
         res.redirect('/dashboard');
     } catch (error) {
         console.log(error);
@@ -208,8 +209,8 @@ router.post('/register', async (req, res) => {
 router.get('/logout', async (req, res) => {
     try {
         res.clearCookie('token');
-  //res.json({ message: 'Logout successful.'});
-  res.redirect('/');
+        //res.json({ message: 'Logout successful.'});
+        res.redirect('/');
     } catch (error) {
         console.log(error);
     }
