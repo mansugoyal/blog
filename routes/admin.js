@@ -14,17 +14,17 @@ const jwtSecret = process.env.JWT_SECRET;
  *  CHECK LOGIN
 */
 
-let authMiddleware = (req, res, next)=>{
+let authMiddleware = (req, res, next) => {
     let token = req.cookies.token;
-    if(!token){
+    if (!token) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    try{
+    try {
         let decoded = jwt.verify(token, jwtSecret);
         req.userId = decoded.userId;
         next();
-    }catch(error){
+    } catch (error) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 }
@@ -70,7 +70,7 @@ router.post('/admin', async (req, res) => {
         let token = jwt.sign({ userId: user._id }, jwtSecret);
         res.cookie("token", token, { httpOnly: true });
         res.redirect('/dashboard');
-        
+
     } catch (error) {
         console.log("admin login error----" + error);
     }
@@ -91,10 +91,49 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
         }
 
         let data = await post.find();
-        res.render('admin/dashboard',{
+        res.render('admin/dashboard', {
             locals,
-            data
+            data,
+            layout: adminLayout
         });
+    } catch (error) {
+        console.log("dashboard error-----" + error);
+    }
+});
+
+/**
+ * GET /
+ * ADMIN Create New Post
+*/
+
+router.get('/create-post', authMiddleware, async (req, res) => {
+    try {
+        let locals = {
+            title: "Create Post",
+            description: "Simple Blog created with NodeJs, Express & MongoDb."
+        }
+
+        res.render('admin/create-post', {
+            locals,
+            layout: adminLayout
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+
+/**
+ * POST /
+ * ADMIN Create New Post
+*/
+
+router.post('/create-post', authMiddleware, async (req, res) => {
+    try {
+        let { title, body } = req.body;
+        let postCreated = await post.create({title, body});
+        res.status(201).json({ message: 'Post Created', postCreated });
     } catch (error) {
         console.log(error);
     }
