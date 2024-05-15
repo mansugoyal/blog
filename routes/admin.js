@@ -12,7 +12,7 @@ const jwtSecret = process.env.JWT_SECRET;
 
 
 /**
- *  CHECK LOGIN
+ *  Login Middleware
 */
 
 let authMiddleware = (req, res, next) => {
@@ -31,8 +31,8 @@ let authMiddleware = (req, res, next) => {
 }
 
 /**
- * GET /
- * Admin Login Page
+ * Get /
+ * Admin login page layout
 */
 
 router.get('/admin', async (req, res) => {
@@ -49,8 +49,8 @@ router.get('/admin', async (req, res) => {
 });
 
 /**
- * POST /
- * Admin - CHECK LOGIN
+ * Post /
+ * Admin authenticating user
 */
 
 router.post('/admin', async (req, res) => {
@@ -79,8 +79,8 @@ router.post('/admin', async (req, res) => {
 
 
 /**
- * POST /
- * Admin DASHBOARD
+ * Get /
+ * Admin dashboard
 */
 
 router.get('/dashboard', authMiddleware, async (req, res) => {
@@ -103,8 +103,8 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
 });
 
 /**
- * GET /
- * Admin Create New Post
+ * Get /
+ * Admin create post layout
 */
 
 router.get('/create-post', authMiddleware, async (req, res) => {
@@ -127,8 +127,8 @@ router.get('/create-post', authMiddleware, async (req, res) => {
 
 
 /**
- * POST /
- * Admin Create New Post
+ * Post /
+ * Admin create new post
 */
 
 router.post('/create-post', authMiddleware, async (req, res) => {
@@ -143,8 +143,8 @@ router.post('/create-post', authMiddleware, async (req, res) => {
 
 
 /**
- * DELETE /
- * Admin Delete Post
+ * Delete /
+ * Admin delete post
 */
 // Use method-override middleware
 router.delete('/delete-post/:id', authMiddleware, async (req, res) => {
@@ -174,8 +174,8 @@ router.delete('/delete-post/:id', authMiddleware, async (req, res) => {
 
 
 /**
- * POST /
- * Admin REGISTER
+ * Post /
+ * Admin create user
 */
 
 router.post('/register', async (req, res) => {
@@ -202,8 +202,8 @@ router.post('/register', async (req, res) => {
 
 
 /**
- * GET /
- * Admin Logout
+ * Get /
+ * Admin logout
 */
 
 router.get('/logout', async (req, res) => {
