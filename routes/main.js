@@ -31,7 +31,8 @@ router.get('', async (req, res) => {
             locals,
             data,
             current: page,
-            nextPage: hasNextPage ? nextPage : null
+            nextPage: hasNextPage ? nextPage : null,
+            currentRoute: '/'
         });
     } catch (error) {
         console.log("get data error-----" + error)
@@ -54,7 +55,11 @@ router.get('/post/:id', async (req, res) => {
             description: data.description
         }
 
-        res.render('post', { locals, data });
+        res.render('post', { 
+            locals, 
+            data,
+            currentRoute: `/post/${slug}`
+        });
     } catch (error) {
         console.log("get data error-----" + error)
     }
@@ -95,11 +100,15 @@ router.post('/search', async (req, res) => {
 
 
 router.get('/about', (req, res) => {
-    res.render('about')
+    res.render('about',{
+        currentRoute: '/about'
+    })
 });
 
 router.get('/contact', (req, res) => {
-    res.render('contact')
+    res.render('contact',{
+        currentRoute: '/contact'
+    })
 });
 
 // Seeder to insert sample data to view on page

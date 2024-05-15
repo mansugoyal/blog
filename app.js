@@ -10,6 +10,7 @@ let methodOverride = require('method-override');
 
 
 let connectDB = require('./config/db');
+let { isActiveRoute } = require('./helpers/routeHelper');
 
 let app = express();
 let port = process.env.PORT || 5000;
@@ -17,7 +18,7 @@ let port = process.env.PORT || 5000;
 //Connect to Database
 connectDB();
 
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(methodOverride('_method'));
@@ -38,6 +39,10 @@ app.use(express.static('public'));
 app.use(expressLayout);
 app.set('layout', './layouts/main');
 app.set('view engine', 'ejs');
+
+
+app.locals.isActiveRoute = isActiveRoute;
+
 
 app.use('/', require('./routes/main'));
 app.use('/', require('./routes/admin'));
